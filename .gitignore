@@ -1,0 +1,12 @@
+# Rust
+target/
+
+# Backup files
+*.rs.bk
+
+# VS Code
+.vscode/
+
+# OS files
+.DS_Store
+Thumbs.db
