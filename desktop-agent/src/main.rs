@@ -18,8 +18,8 @@ use heartbeat::Heartbeat;
 use network::Network;
 
 use std::{thread, time::Duration};
-
-fn main() {
+#[tokio::main]
+async fn main() {
     let config = Config::load();
     let device = Device::current();
 
@@ -41,7 +41,7 @@ Logger::info(
 
     agent.start();
     ServiceManager::start();
-    Heartbeat::start();
+    Heartbeat::start().await; 
     
     Logger::info("Agent is running.");
     Logger::info("Press Ctrl+C to stop.");
