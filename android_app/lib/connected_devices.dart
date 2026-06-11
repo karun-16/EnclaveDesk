@@ -2,9 +2,14 @@ import 'package:flutter/material.dart';
 import 'device_manager.dart';
 import 'add_device_dialog.dart';
 
-class ConnectedDevicesPage extends StatelessWidget {
+class ConnectedDevicesPage extends StatefulWidget {
   const ConnectedDevicesPage({super.key});
 
+  @override
+  State<ConnectedDevicesPage> createState() => _ConnectedDevicesPageState();
+}
+
+class _ConnectedDevicesPageState extends State<ConnectedDevicesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -12,7 +17,12 @@ class ConnectedDevicesPage extends StatelessWidget {
 
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          showDialog(context: context, builder: (_) => const AddDeviceDialog());
+          showDialog(
+            context: context,
+            builder: (_) => const AddDeviceDialog(),
+          ).then((_) {
+            setState(() {});
+          });
         },
         child: const Icon(Icons.add),
       ),
@@ -31,13 +41,33 @@ class ConnectedDevicesPage extends StatelessWidget {
 
             subtitle: Text(device.ip),
 
-            trailing: device.connected
-                ? const Icon(Icons.check_circle, color: Colors.green)
-                : null,
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                if (device.connected)
+                  const Icon(Icons.check_circle, color: Colors.green),
+              ],
+            ),
 
             onTap: () {
-              DeviceManager.connect(device);
+              setState(() {
+                DeviceManager.connect(device);
+              });
+
               Navigator.pop(context);
+            },
+            onLongPress: () {
+              if (device.connected) {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(content: Text("Cannot remove active device.")),
+                );
+
+                return;
+              }
+
+              setState(() {
+                DeviceManager.removeDevice(device);
+              });
             },
           );
         },
