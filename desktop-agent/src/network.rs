@@ -76,11 +76,10 @@ impl Network {
                                 device.os
                             ));
                         }
-
                         "TIME" => {
                             Logger::info("Time command received.");
                         }
-
+                        
                         "LIST_APPS" => {
     Logger::info("Installed apps requested.");
 
