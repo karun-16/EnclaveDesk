@@ -4,7 +4,11 @@ import 'device.dart';
 import 'device_manager.dart';
 import 'connected_devices.dart';
 
-void main() {
+Future<void> main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await DeviceManager.loadDevices();
+
   runApp(const EnclaveDeskApp());
 }
 
