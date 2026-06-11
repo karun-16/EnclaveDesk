@@ -37,9 +37,14 @@ class _HomePageState extends State<HomePage> {
   Future<String> sendCommand(String command) async {
     try {
       if (current == null) {
+        debugPrint("No device selected.");
         return "";
       }
 
+      debugPrint("================================");
+      debugPrint("Current Device : ${current!.name}");
+      debugPrint("Current IP     : ${current!.ip}");
+      debugPrint("Command        : $command");
       debugPrint("Connecting...");
 
       final socket = await Socket.connect(current!.ip, 7878);
@@ -60,9 +65,16 @@ class _HomePageState extends State<HomePage> {
 
       await socket.close();
 
+      debugPrint("Response: $response");
+      debugPrint("Connection closed.");
+      debugPrint("================================");
+
       return response;
     } catch (e) {
+      debugPrint("================================");
+      debugPrint("ERROR:");
       debugPrint(e.toString());
+      debugPrint("================================");
       return "";
     }
   }

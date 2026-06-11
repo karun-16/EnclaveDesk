@@ -2,7 +2,7 @@ import 'device.dart';
 
 class DeviceManager {
   static final List<Device> devices = [
-    Device(name: "ACER", ip: "192.168.0.5", connected: true),
+    Device(name: "ACER", ip: "192.168.0.4", connected: true),
   ];
 
   static Device? currentDevice() {
