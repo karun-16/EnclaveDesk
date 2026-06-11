@@ -28,7 +28,7 @@ class DeviceManager {
   static Future<void> saveDevices() async {
     final prefs = await SharedPreferences.getInstance();
 
-    final data = devices.map((device) => device.toJson()).toList();
+    final data = devices.map((d) => d.toJson()).toList();
 
     await prefs.setString(storageKey, jsonEncode(data));
   }
@@ -51,10 +51,28 @@ class DeviceManager {
     }
   }
 
-  static Future<void> addDevice(Device device) async {
+  static Device? findDevice(String name, String ip) {
+    for (final device in devices) {
+      if (device.name == name && device.ip == ip) {
+        return device;
+      }
+    }
+
+    return null;
+  }
+
+  static Future<Device> addDevice(Device device) async {
+    final existing = findDevice(device.name, device.ip);
+
+    if (existing != null) {
+      return existing;
+    }
+
     devices.add(device);
 
     await saveDevices();
+
+    return device;
   }
 
   static Future<void> removeDevice(Device device) async {
