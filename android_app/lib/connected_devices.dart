@@ -16,7 +16,7 @@ class _ConnectedDevicesPageState extends State<ConnectedDevicesPage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Connected Devices")),
+      appBar: AppBar(title: const Text("Settings")),
 
       floatingActionButton: FloatingActionButton(
         child: const Icon(Icons.add),

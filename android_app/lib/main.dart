@@ -4,6 +4,7 @@ import 'device.dart';
 import 'device_manager.dart';
 import 'connected_devices.dart';
 import 'nearby_devices_page.dart';
+import 'settings_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -203,7 +204,43 @@ class _HomePageState extends State<HomePage> {
                 break;
 
               case "DEVICE INFO":
-                sendCommand("DEVICE_INFO");
+                () async {
+                  String result = await sendCommand("DEVICE_INFO");
+
+                  if (result.isEmpty) {
+                    return;
+                  }
+
+                  List<String> parts = result.split("|");
+
+                  if (parts.length != 3) {
+                    return;
+                  }
+
+                  if (!context.mounted) {
+                    return;
+                  }
+
+                  showDialog(
+                    context: context,
+                    builder: (_) {
+                      return AlertDialog(
+                        title: const Text("Device Information"),
+                        content: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text("🖥 ${parts[0]}"),
+                            const SizedBox(height: 10),
+                            Text("OS : ${parts[1]}"),
+                            Text("User : ${parts[2]}"),
+                          ],
+                        ),
+                      );
+                    },
+                  );
+                }();
+
                 break;
 
               case "OPEN APPS":
@@ -254,9 +291,7 @@ class _HomePageState extends State<HomePage> {
               case "SETTINGS":
                 Navigator.push(
                   context,
-                  MaterialPageRoute(
-                    builder: (_) => const ConnectedDevicesPage(),
-                  ),
+                  MaterialPageRoute(builder: (_) => const SettingsPage()),
                 ).then((_) {
                   setState(() {
                     current = DeviceManager.currentDevice();
@@ -300,10 +335,6 @@ class _HomePageState extends State<HomePage> {
             ),
 
             const SizedBox(height: 30),
-
-            actionButton("NEARBY"),
-
-            actionButton("DEVICE INFO"),
 
             actionButton("OPEN APPS"),
 
