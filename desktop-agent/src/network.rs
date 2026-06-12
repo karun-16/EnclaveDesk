@@ -64,6 +64,7 @@ impl Network {
                     let msg = msg.trim();
 
                     match msg {
+
                         "PING" => {
                             Logger::info("PING RECEIVED");
                         }
@@ -217,7 +218,18 @@ impl Network {
         );
     }
 }
-
+msg if msg.starts_with("MOVE:") => {
+    Logger::info(&format!(
+        "Mouse move: {}",
+        msg
+    ));
+}
+msg if msg.starts_with("SCROLL:") => {
+    Logger::info(&format!(
+        "Scroll: {}",
+        msg
+    ));
+}
 "RIGHT_CLICK" => {
     Logger::info("Right click.");
 
