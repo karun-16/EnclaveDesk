@@ -87,6 +87,26 @@ impl Network {
         "Device info sent."
     );
 }
+"SYSTEM_STATS" => {
+    let response = format!(
+        "{}|{}|{}|{}|{}",
+        "Intel CPU",
+        "Unknown GPU",
+        "16 GB",
+        "512 GB",
+        "Unknown"
+    );
+
+    let _ = stream.write_all(
+        response.as_bytes()
+    );
+
+    let _ = stream.flush();
+
+    Logger::info(
+        "System stats sent."
+    );
+}
 "PAIR_CODE" => {
     let device = Device::current();
 
@@ -143,6 +163,38 @@ impl Network {
                                 ])
                                 .spawn();
                         }
+                        "RESTART" => {
+    Logger::info("Restarting PC...");
+
+    let _ = Command::new("shutdown")
+        .args([
+            "/r",
+            "/t",
+            "0"
+        ])
+        .spawn();
+}
+
+"SIGNOUT" => {
+    Logger::info("Signing out...");
+
+    let _ = Command::new("shutdown")
+        .args([
+            "/l"
+        ])
+        .spawn();
+}
+
+"SLEEP" => {
+    Logger::info("Sleeping PC...");
+
+    let _ = Command::new("rundll32.exe")
+        .args([
+            "powrprof.dll,SetSuspendState",
+            "0,1,0"
+        ])
+        .spawn();
+}
 
                         msg if msg.starts_with("OPEN_URL:") => {
                             let url =

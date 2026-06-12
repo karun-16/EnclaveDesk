@@ -1,7 +1,20 @@
 import 'package:flutter/material.dart';
 
 class SystemStatsPage extends StatelessWidget {
-  const SystemStatsPage({super.key});
+  final String cpu;
+  final String gpu;
+  final String ram;
+  final String storage;
+  final String battery;
+
+  const SystemStatsPage({
+    super.key,
+    required this.cpu,
+    required this.gpu,
+    required this.ram,
+    required this.storage,
+    required this.battery,
+  });
 
   Widget statTile(String title, String value, IconData icon) {
     return Card(
@@ -24,15 +37,15 @@ class SystemStatsPage extends StatelessWidget {
         padding: const EdgeInsets.all(12),
         child: Column(
           children: [
-            statTile("CPU", "--", Icons.memory),
+            statTile("CPU", cpu, Icons.memory),
 
-            statTile("GPU", "--", Icons.videogame_asset),
+            statTile("GPU", gpu, Icons.videogame_asset),
 
-            statTile("RAM", "--", Icons.storage),
+            statTile("RAM", ram, Icons.storage),
 
-            statTile("Storage", "--", Icons.sd_storage),
+            statTile("Storage", storage, Icons.sd_storage),
 
-            statTile("Battery", "--", Icons.battery_full),
+            statTile("Battery", battery, Icons.battery_full),
           ],
         ),
       ),
