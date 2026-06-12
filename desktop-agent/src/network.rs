@@ -3,6 +3,7 @@ use std::io::{Read, Write};
 use std::net::TcpListener;
 use std::process::Command;
 use std::fs;
+use windows::Win32::UI::Input::KeyboardAndMouse as km;
 
 pub struct Network;
 fn get_apps() -> String {
@@ -195,7 +196,49 @@ impl Network {
         ])
         .spawn();
 }
+"LEFT_CLICK" => {
+    Logger::info("Left click.");
 
+    unsafe {
+        km::mouse_event(
+            km::MOUSEEVENTF_LEFTDOWN,
+            0,
+            0,
+            0,
+            0,
+        );
+
+        km::mouse_event(
+            km::MOUSEEVENTF_LEFTUP,
+            0,
+            0,
+            0,
+            0,
+        );
+    }
+}
+
+"RIGHT_CLICK" => {
+    Logger::info("Right click.");
+
+    unsafe {
+        km::mouse_event(
+            km::MOUSEEVENTF_RIGHTDOWN,
+            0,
+            0,
+            0,
+            0,
+        );
+
+        km::mouse_event(
+            km::MOUSEEVENTF_RIGHTUP,
+            0,
+            0,
+            0,
+            0,
+        );
+    }
+}
                         msg if msg.starts_with("OPEN_URL:") => {
                             let url =
                                 msg.replace("OPEN_URL:", "");

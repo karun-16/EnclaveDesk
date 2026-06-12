@@ -5,6 +5,8 @@ import 'device_manager.dart';
 import 'connected_devices.dart';
 import 'nearby_devices_page.dart';
 import 'settings_page.dart';
+import 'mouse_page.dart';
+import 'main_pager.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -23,7 +25,7 @@ class EnclaveDeskApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "EnclaveDesk",
       theme: ThemeData.dark(),
-      home: const HomePage(),
+      home: const MainPager(),
     );
   }
 }
@@ -250,6 +252,13 @@ class _HomePageState extends State<HomePage> {
               case "CUSTOM APPS":
                 loadApps();
                 break;
+              case "MOUSE":
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const MousePage()),
+                );
+                break;
+
               case "NEARBY":
                 Navigator.push(
                   context,
