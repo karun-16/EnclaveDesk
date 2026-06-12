@@ -39,15 +39,21 @@ class PowerOptionsPage extends StatelessWidget {
         padding: const EdgeInsets.all(20),
         child: Column(
           children: [
-            powerButton("Sleep", Icons.bed, () {}),
+            powerButton("Sleep", Icons.bed, () {
+              sendPower("SLEEP");
+            }),
 
             powerButton("Shutdown", Icons.power_settings_new, () {
               sendPower("SHUTDOWN");
             }),
 
-            powerButton("Restart", Icons.restart_alt, () {}),
+            powerButton("Restart", Icons.restart_alt, () {
+              sendPower("RESTART");
+            }),
 
-            powerButton("Sign Out", Icons.logout, () {}),
+            powerButton("Sign Out", Icons.logout, () {
+              sendPower("SIGNOUT");
+            }),
           ],
         ),
       ),
