@@ -8,6 +8,7 @@ mod device;
 mod heartbeat;
 mod constants;
 mod network;
+mod discovery;
 
 use agent::Agent;
 use logger::Logger;
@@ -16,6 +17,7 @@ use service::ServiceManager;
 use device::Device;
 use heartbeat::Heartbeat;
 use network::Network;
+use discovery::Discovery;
 
 use std::{thread, time::Duration};
 #[tokio::main]
@@ -42,6 +44,7 @@ Logger::info(
     agent.start();
     ServiceManager::start();
     Heartbeat::start().await; 
+    Discovery::start();
     
     Logger::info("Agent is running.");
     Logger::info("Press Ctrl+C to stop.");

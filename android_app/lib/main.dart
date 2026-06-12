@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'device.dart';
 import 'device_manager.dart';
 import 'connected_devices.dart';
+import 'nearby_devices_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -37,6 +38,71 @@ class _HomePageState extends State<HomePage> {
   Device? current = DeviceManager.currentDevice();
 
   List<String> apps = [];
+  Future<void> discoverDevices() async {
+    try {
+      RawDatagramSocket socket = await RawDatagramSocket.bind(
+        InternetAddress.anyIPv4,
+        0,
+      );
+
+      socket.broadcastEnabled = true;
+
+      socket.send(
+        "ENCLAVEDESK_DISCOVER".codeUnits,
+        InternetAddress("255.255.255.255"),
+        7879,
+      );
+
+      socket.listen((event) async {
+        if (event != RawSocketEvent.read) {
+          return;
+        }
+
+        Datagram? dg = socket.receive();
+
+        if (dg == null) {
+          return;
+        }
+
+        String msg = String.fromCharCodes(dg.data);
+
+        List<String> parts = msg.split("|");
+
+        if (parts.length != 4) {
+          return;
+        }
+
+        if (parts[0] != "ENCLAVEDESK") {
+          return;
+        }
+
+        String name = parts[1];
+        String ip = parts[2];
+
+        final device = await DeviceManager.addDevice(
+          Device(name: name, ip: ip),
+        );
+
+        await DeviceManager.connect(device);
+
+        if (!mounted) {
+          return;
+        }
+
+        setState(() {
+          current = device;
+        });
+
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text("Connected to $name")));
+
+        socket.close();
+      });
+    } catch (e) {
+      debugPrint(e.toString());
+    }
+  }
 
   Future<String> sendCommand(String command) async {
     try {
@@ -147,7 +213,44 @@ class _HomePageState extends State<HomePage> {
               case "CUSTOM APPS":
                 loadApps();
                 break;
+              case "NEARBY":
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const NearbyDevicesPage()),
+                ).then((result) async {
+                  if (result == null) {
+                    return;
+                  }
 
+                  List<String> parts = result.toString().split("|");
+
+                  if (parts.length != 4) {
+                    return;
+                  }
+
+                  String name = parts[1];
+                  String ip = parts[2];
+
+                  final device = await DeviceManager.addDevice(
+                    Device(name: name, ip: ip),
+                  );
+
+                  await DeviceManager.connect(device);
+
+                  setState(() {
+                    current = device;
+                  });
+
+                  if (!context.mounted) {
+                    return;
+                  }
+
+                  ScaffoldMessenger.of(
+                    context,
+                  ).showSnackBar(SnackBar(content: Text("Connected to $name")));
+                });
+
+                break;
               case "SETTINGS":
                 Navigator.push(
                   context,
@@ -198,7 +301,7 @@ class _HomePageState extends State<HomePage> {
 
             const SizedBox(height: 30),
 
-            actionButton("PING"),
+            actionButton("NEARBY"),
 
             actionButton("DEVICE INFO"),
 

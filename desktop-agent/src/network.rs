@@ -68,14 +68,44 @@ impl Network {
                         }
 
                         "DEVICE_INFO" => {
-                            let device = Device::current();
+    let device = Device::current();
 
-                            Logger::info(&format!(
-                                "{} ({})",
-                                device.name,
-                                device.os
-                            ));
-                        }
+    let response = format!(
+        "{}|{}|{}",
+        device.name,
+        device.os,
+        device.user
+    );
+
+    let _ = stream.write_all(
+        response.as_bytes()
+    );
+
+    let _ = stream.flush();
+
+    Logger::info(
+        "Device info sent."
+    );
+}
+"PAIR_CODE" => {
+    let device = Device::current();
+
+    let pair_code = format!(
+        "ENCLAVEDESK|{}|192.168.0.5",
+        device.name
+    );
+
+    Logger::info(&format!(
+        "Pair code requested: {}",
+        pair_code
+    ));
+
+    let _ = stream.write_all(
+        pair_code.as_bytes()
+    );
+
+    let _ = stream.flush();
+} 
                         "TIME" => {
                             Logger::info("Time command received.");
                         }
