@@ -6,6 +6,8 @@ edition = "2024"
 [dependencies]
 tokio = { version = "1", features = ["full"] }
 windows = { version = "0.61", features = [
-    "Win32_UI_Input_KeyboardAndMouse"
+    "Win32_UI_Input_KeyboardAndMouse",
+    "Win32_Media_Audio",
+    "Win32_System_Com",
 ] }
 enigo = "0.2"

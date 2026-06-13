@@ -409,6 +409,26 @@ msg if msg.starts_with("TYPE:") => {
         );
     }
 }
+msg if msg.starts_with("VOLUME:") => {
+    let level =
+        msg.replace(
+            "VOLUME:",
+            "",
+        );
+
+    Logger::info(
+        &format!(
+            "Volume {}",
+            level
+        )
+    );
+}
+
+"MUTE" => {
+    Logger::info(
+        "Mute"
+    );
+}
 
                         _ => {
                             Logger::info(&format!(
