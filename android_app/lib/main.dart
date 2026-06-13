@@ -7,6 +7,7 @@ import 'nearby_devices_page.dart';
 import 'settings_page.dart';
 import 'mouse_page.dart';
 import 'main_pager.dart';
+import 'keyboard_page.dart' show routeObserver;
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();

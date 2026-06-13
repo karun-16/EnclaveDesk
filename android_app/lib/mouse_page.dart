@@ -17,6 +17,16 @@ class MousePage extends StatelessWidget {
           children: [
             Expanded(
               child: GestureDetector(
+                onPanUpdate: (details) async {
+                  final device = DeviceManager.currentDevice();
+
+                  if (device == null) return;
+
+                  int dx = details.delta.dx.toInt();
+                  int dy = details.delta.dy.toInt();
+
+                  await NetworkService.sendCommand(device.ip, "MOVE:$dx:$dy");
+                },
                 onTap: () async {
                   final device = DeviceManager.currentDevice();
 
