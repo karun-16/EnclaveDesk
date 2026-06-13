@@ -4,6 +4,12 @@ use std::net::TcpListener;
 use std::process::Command;
 use std::fs;
 use windows::Win32::UI::Input::KeyboardAndMouse as km;
+use enigo::{
+    Enigo,
+    Keyboard,
+    Key,
+    Settings,
+};
 
 pub struct Network;
 fn get_apps() -> String {
@@ -330,6 +336,79 @@ msg if msg.starts_with("SCROLL:") => {
                                 ])
                                 .spawn();
                         }
+msg if msg.starts_with("TYPE:") => {
+    let text =
+        msg.replace("TYPE:", "");
+
+    if let Ok(mut enigo) =
+        Enigo::new(
+            &Settings::default()
+        )
+    {
+        let _ =
+            enigo.text(&text);
+
+        Logger::info(
+            &format!(
+                "Typed: {}",
+                text
+            )
+        );
+    }
+}
+"BACKSPACE" => {
+    if let Ok(mut enigo) =
+        Enigo::new(
+            &Settings::default()
+        )
+    {
+        let _ =
+            enigo.key(
+                Key::Backspace,
+                enigo::Direction::Click,
+            );
+
+        Logger::info(
+            "Backspace",
+        );
+    }
+}
+
+"SPACE" => {
+    if let Ok(mut enigo) =
+        Enigo::new(
+            &Settings::default()
+        )
+    {
+        let _ =
+            enigo.key(
+                Key::Space,
+                enigo::Direction::Click,
+            );
+
+        Logger::info(
+            "Space",
+        );
+    }
+}
+
+"ENTER" => {
+    if let Ok(mut enigo) =
+        Enigo::new(
+            &Settings::default()
+        )
+    {
+        let _ =
+            enigo.key(
+                Key::Return,
+                enigo::Direction::Click,
+            );
+
+        Logger::info(
+            "Enter",
+        );
+    }
+}
 
                         _ => {
                             Logger::info(&format!(

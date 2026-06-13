@@ -1,5 +1,7 @@
+import 'package:characters/characters.dart';
 import 'package:flutter/material.dart';
-
+import 'device_manager.dart';
+import 'network_service.dart';
 import 'mouse_page.dart';
 
 /// A [GlobalKey] that lets [MainPager] call [KeyboardPageState.openKeyboard]
@@ -25,6 +27,7 @@ class KeyboardPageState extends State<KeyboardPage>
   // ── controllers ────────────────────────────────────────────────────────────
 
   final TextEditingController _controller = TextEditingController();
+  bool _ignoreChange = false;
   final FocusNode _focusNode = FocusNode();
 
   // ── lifecycle ──────────────────────────────────────────────────────────────
@@ -107,7 +110,61 @@ class KeyboardPageState extends State<KeyboardPage>
               autofocus: true,
               controller: _controller,
               focusNode: _focusNode,
-              maxLines: 1,
+              minLines: 1,
+              maxLines: 2,
+              keyboardType: TextInputType.multiline,
+              textInputAction: TextInputAction.newline,
+
+              onChanged: (value) async {
+                if (_ignoreChange) {
+                  return;
+                }
+
+                final device = DeviceManager.currentDevice();
+
+                if (device == null) {
+                  return;
+                }
+
+                if (value.isNotEmpty) {
+                  for (final c in value.characters) {
+                    if (c == " ") {
+                      await NetworkService.sendCommand(device.ip, "SPACE");
+                    } else if (c == "\n") {
+                      await NetworkService.sendCommand(device.ip, "ENTER");
+                    } else {
+                      await NetworkService.sendCommand(device.ip, "TYPE:$c");
+                    }
+                  }
+                }
+
+                _ignoreChange = true;
+
+                _controller.clear();
+
+                _ignoreChange = false;
+              },
+              onEditingComplete: () async {
+                final device = DeviceManager.currentDevice();
+
+                if (device == null) {
+                  return;
+                }
+
+                await NetworkService.sendCommand(device.ip, "ENTER");
+              },
+              onSubmitted: (_) async {
+                final device = DeviceManager.currentDevice();
+
+                if (device == null) {
+                  return;
+                }
+
+                await NetworkService.sendCommand(device.ip, "ENTER");
+              },
+              onTap: () {
+                openKeyboard();
+              },
               decoration: const InputDecoration(
                 hintText: 'Type here…',
                 border: OutlineInputBorder(),

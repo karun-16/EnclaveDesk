@@ -8,3 +8,4 @@ tokio = { version = "1", features = ["full"] }
 windows = { version = "0.61", features = [
     "Win32_UI_Input_KeyboardAndMouse"
 ] }
+enigo = "0.2"
