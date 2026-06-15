@@ -4,6 +4,12 @@ use std::net::TcpListener;
 use std::process::Command;
 use std::fs;
 use windows::Win32::UI::Input::KeyboardAndMouse as km;
+use windows::Win32::Foundation::POINT;
+
+use windows::Win32::UI::WindowsAndMessaging::{
+    GetCursorPos,
+    SetCursorPos,
+};
 use enigo::{
     Enigo,
     Keyboard,
@@ -225,10 +231,36 @@ impl Network {
     }
 }
 msg if msg.starts_with("MOVE:") => {
-    Logger::info(&format!(
-        "Mouse move: {}",
-        msg
-    ));
+    let parts: Vec<&str> =
+        msg.split(":").collect();
+
+    if parts.len() == 3 {
+        let dx =
+            parts[1]
+            .parse::<i32>()
+            .unwrap_or(0);
+
+        let dy =
+            parts[2]
+            .parse::<i32>()
+            .unwrap_or(0);
+
+        unsafe {
+            let mut point =
+                POINT::default();
+
+            let _ =
+                GetCursorPos(
+                    &mut point
+                );
+
+            let _ =
+                SetCursorPos(
+                    point.x + dx,
+                    point.y + dy,
+                );
+        }
+    }
 }
 msg if msg.starts_with("SCROLL:") => {
     Logger::info(&format!(

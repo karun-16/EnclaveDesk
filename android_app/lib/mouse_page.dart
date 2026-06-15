@@ -10,7 +10,14 @@ class MousePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("Mouse")),
+      appBar: AppBar(
+        leading: BackButton(
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
+        title: const Text("Mouse"),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
