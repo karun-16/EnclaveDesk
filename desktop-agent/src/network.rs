@@ -230,6 +230,57 @@ impl Network {
         );
     }
 }
+"DOUBLE_CLICK" => {
+    Logger::info("Double click.");
+
+    unsafe {
+        for _ in 0..2 {
+            km::mouse_event(
+                km::MOUSEEVENTF_LEFTDOWN,
+                0,
+                0,
+                0,
+                0,
+            );
+
+            km::mouse_event(
+                km::MOUSEEVENTF_LEFTUP,
+                0,
+                0,
+                0,
+                0,
+            );
+        }
+    }
+}
+"DRAG_START" => {
+    Logger::info("Drag start.");
+
+    unsafe {
+        km::mouse_event(
+            km::MOUSEEVENTF_LEFTDOWN,
+            0,
+            0,
+            0,
+            0,
+        );
+    }
+}
+
+"DRAG_END" => {
+    Logger::info("Drag end.");
+
+    unsafe {
+        km::mouse_event(
+            km::MOUSEEVENTF_LEFTUP,
+            0,
+            0,
+            0,
+            0,
+        );
+    }
+}
+
 msg if msg.starts_with("MOVE:") => {
     let parts: Vec<&str> =
         msg.split(":").collect();
@@ -263,10 +314,27 @@ msg if msg.starts_with("MOVE:") => {
     }
 }
 msg if msg.starts_with("SCROLL:") => {
-    Logger::info(&format!(
-        "Scroll: {}",
-        msg
-    ));
+    let value = msg
+        .replace("SCROLL:", "")
+        .parse::<i32>()
+        .unwrap_or(0);
+
+    unsafe {
+        km::mouse_event(
+    km::MOUSEEVENTF_WHEEL,
+    0,
+    0,
+    value * 120,
+    0,
+);
+    }
+
+    Logger::info(
+        &format!(
+            "Scroll {}",
+            value
+        )
+    );
 }
 "RIGHT_CLICK" => {
     Logger::info("Right click.");

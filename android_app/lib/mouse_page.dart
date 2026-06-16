@@ -7,7 +7,7 @@ import 'network_service.dart';
 class MousePage extends StatelessWidget {
   const MousePage({super.key});
 
-  static const double sensitivity = 2.5;
+  static const double baseSensitivity = 3.5;
 
   @override
   Widget build(BuildContext context) {
@@ -26,9 +26,29 @@ class MousePage extends StatelessWidget {
 
                   if (device == null) return;
 
-                  int dx = (details.delta.dx * sensitivity).round();
+                  double speed = details.delta.distance;
 
-                  int dy = (details.delta.dy * sensitivity).round();
+                  double multiplier = baseSensitivity;
+
+                  if (speed > 1) {
+                    multiplier = 4.0;
+                  }
+
+                  if (speed > 3) {
+                    multiplier = 6.0;
+                  }
+
+                  if (speed > 6) {
+                    multiplier = 8.0;
+                  }
+
+                  if (speed > 10) {
+                    multiplier = 10.0;
+                  }
+
+                  int dx = (details.delta.dx * multiplier).round();
+
+                  int dy = (details.delta.dy * multiplier).round();
 
                   if (dx == 0 && dy == 0) {
                     return;
@@ -44,7 +64,13 @@ class MousePage extends StatelessWidget {
 
                   await NetworkService.sendCommand(device.ip, "LEFT_CLICK");
                 },
+                onDoubleTap: () async {
+                  final device = DeviceManager.currentDevice();
 
+                  if (device == null) return;
+
+                  await NetworkService.sendCommand(device.ip, "DOUBLE_CLICK");
+                },
                 onLongPress: () async {
                   final device = DeviceManager.currentDevice();
 
