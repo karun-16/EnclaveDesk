@@ -1,39 +1,42 @@
 import 'package:flutter/material.dart';
 
-import 'keyboard_page.dart';
 import 'device_manager.dart';
+import 'keyboard_page.dart';
 import 'network_service.dart';
 
 class MousePage extends StatelessWidget {
   const MousePage({super.key});
 
+  static const double sensitivity = 2.5;
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        leading: BackButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: const Text("Mouse"),
-      ),
+      appBar: AppBar(title: const Text("Mouse")),
       body: Padding(
         padding: const EdgeInsets.all(16),
         child: Column(
           children: [
             Expanded(
               child: GestureDetector(
+                behavior: HitTestBehavior.opaque,
+
                 onPanUpdate: (details) async {
                   final device = DeviceManager.currentDevice();
 
                   if (device == null) return;
 
-                  int dx = details.delta.dx.toInt();
-                  int dy = details.delta.dy.toInt();
+                  int dx = (details.delta.dx * sensitivity).round();
+
+                  int dy = (details.delta.dy * sensitivity).round();
+
+                  if (dx == 0 && dy == 0) {
+                    return;
+                  }
 
                   await NetworkService.sendCommand(device.ip, "MOVE:$dx:$dy");
                 },
+
                 onTap: () async {
                   final device = DeviceManager.currentDevice();
 
@@ -41,6 +44,7 @@ class MousePage extends StatelessWidget {
 
                   await NetworkService.sendCommand(device.ip, "LEFT_CLICK");
                 },
+
                 onLongPress: () async {
                   final device = DeviceManager.currentDevice();
 
@@ -48,6 +52,7 @@ class MousePage extends StatelessWidget {
 
                   await NetworkService.sendCommand(device.ip, "RIGHT_CLICK");
                 },
+
                 child: Container(
                   width: double.infinity,
                   decoration: BoxDecoration(

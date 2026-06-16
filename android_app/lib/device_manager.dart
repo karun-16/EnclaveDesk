@@ -8,7 +8,7 @@ class DeviceManager {
   static const String storageKey = "enclavedesk_devices";
 
   static final List<Device> devices = [
-    Device(name: "ACER", ip: "192.168.0.106", connected: true),
+    Device(name: "ACER", ip: "192.168.0.5", connected: true),
   ];
 
   static Device? currentDevice() {

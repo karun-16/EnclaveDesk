@@ -99,7 +99,10 @@ class KeyboardPageState extends State<KeyboardPage>
       // Keeps the Mouse button visible above the IME.
       resizeToAvoidBottomInset: true,
 
-      appBar: AppBar(title: const Text('Keyboard')),
+      appBar: AppBar(
+        leading: const BackButton(),
+        title: const Text("Keyboard"),
+      ),
 
       body: Padding(
         padding: const EdgeInsets.all(16),

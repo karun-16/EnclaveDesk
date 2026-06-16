@@ -6,7 +6,7 @@ import 'connected_devices.dart';
 import 'nearby_devices_page.dart';
 import 'settings_page.dart';
 import 'mouse_page.dart';
-import 'main_pager.dart';
+import 'keyboard_page.dart';
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -25,7 +25,7 @@ class EnclaveDeskApp extends StatelessWidget {
       debugShowCheckedModeBanner: false,
       title: "EnclaveDesk",
       theme: ThemeData.dark(),
-      home: const MainPager(),
+      home: const HomePage(),
     );
   }
 }
@@ -318,6 +318,52 @@ class _HomePageState extends State<HomePage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      floatingActionButton: FloatingActionButton(
+        child: Padding(
+          padding: const EdgeInsets.all(6),
+          child: Image.asset("assets/icons/remote.png", fit: BoxFit.contain),
+        ),
+        onPressed: () {
+          showModalBottomSheet(
+            context: context,
+            builder: (_) {
+              return SafeArea(
+                child: Wrap(
+                  children: [
+                    ListTile(
+                      leading: const Icon(Icons.keyboard),
+                      title: const Text("Keyboard"),
+                      onTap: () {
+                        Navigator.pop(context);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const KeyboardPage(),
+                          ),
+                        );
+                      },
+                    ),
+
+                    ListTile(
+                      leading: const Icon(Icons.mouse),
+                      title: const Text("Mouse"),
+                      onTap: () {
+                        Navigator.pop(context);
+
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(builder: (_) => const MousePage()),
+                        );
+                      },
+                    ),
+                  ],
+                ),
+              );
+            },
+          );
+        },
+      ),
       appBar: AppBar(title: const Text("EnclaveDesk"), centerTitle: true),
       body: Padding(
         padding: const EdgeInsets.all(20),
